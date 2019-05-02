@@ -1,28 +1,24 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
-import javafx.stage.Stage;
-import org.apache.mahout.classifier.df.DecisionForest;
+import javafx.stage.StageStyle;
 import org.apache.mahout.common.RandomUtils;
 import org.datavec.image.loader.NativeImageLoader;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.trees.J48;
+import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
@@ -34,24 +30,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class controller {
+public class Controller {
 
     private final int CANVAS_WIDTH = 250;
     private final int CANVAS_HEIGHT = 250;
     public Button bBegin;
+    public Canvas canvas;
+    public ImageView imgView;
+    public Label flable;
+    public Label nlable;
+    public Label tlable;
+    public Button butt;
+    public Label fr;
+    public Label nr;
+    public Label tr;
     private NativeImageLoader loader;
     private Label lblResult;
-    MultilayerPerceptron nn;
-    DecisionForest forest = null;
+    MultilayerPerceptron nn = null;
+    RandomForest forest = null;
     J48 j48 = null;
 
 
-
-    public void loadProject(ActionEvent actionEvent) {
+    public void init() {
 
         try{
-            Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-            ImageView imgView = new ImageView();
+            canvas.setHeight(CANVAS_HEIGHT);
+            canvas.setWidth(CANVAS_WIDTH);
             GraphicsContext ctx = canvas.getGraphicsContext2D();
 
 
@@ -61,19 +65,6 @@ public class controller {
             ctx.setLineWidth(12);
             ctx.setLineCap(StrokeLineCap.BUTT);
             lblResult = new Label();
-
-            HBox hbBottom = new HBox(10,canvas, imgView);
-            VBox root = new VBox(5, hbBottom, lblResult);
-            hbBottom.setAlignment(Pos.CENTER);
-            root.setAlignment(Pos.CENTER);
-
-            Scene scene = new Scene(root, 700, 500);
-            Stage stage=new Stage();
-
-            stage.setScene(scene);
-
-            stage.show();
-            stage.setTitle("Handwritten Digit Recognition");
 
             canvas.setOnMousePressed(e -> {
                 ctx.setStroke(Color.BLACK);
@@ -91,23 +82,12 @@ public class controller {
                     clear(ctx);
                 }
             });
-            canvas.setOnKeyReleased(e -> {
-                if(e.getCode() == KeyCode.ENTER) {
-                    BufferedImage scaledImg = getScaledImage(canvas);
-                    imgView.setImage(SwingFXUtils.toFXImage(scaledImg, null));
-                    try {
-                        predictImage(scaledImg);
-                        System.out.println("Hello");
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            });
+
             clear(ctx);
             canvas.requestFocus();
 
         }catch(Exception ex){
-            System.out.println(ex);
+            ex.printStackTrace();
         }
     }
 
@@ -132,7 +112,6 @@ public class controller {
     private void predictImage(BufferedImage img ) throws Exception {
         Random rng = RandomUtils.getRandom();
         byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
-        System.out.println("ok");
         List<double[]> results = new ArrayList<>();
         double[] pole = new double[785];
         for(int i = 0; i < pixels.length; i++){
@@ -155,50 +134,55 @@ public class controller {
             }
         }
 
-        System.out.println("OK");
+
         Instances ins = new Instances("mnist_test",attributes,1);
         ins.add(new DenseInstance(1.0,pole));
         ins.setClassIndex(0);
 
 
 
-//        Normalize normalizeFilter = new Normalize();
-//        normalizeFilter.setInputFormat(i);
-//        i = Normalize.useFilter(i,normalizeFilter);
+        int label = (int) j48.classifyInstance(ins.instance(0));
+        int label2 = (int) nn.classifyInstance(ins.instance(0));
+        int label3 = (int) forest.classifyInstance(ins.instance(0));
 
-       // System.out.println(ins);
-
-//        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-//
-//        String[] sData = new String[] {stringBuilder.toString()};
-//
-//        Instances i = new Instances();
-//        String descriptor = Forest.buildDescriptor(784);
-//
-//
-//        Data data = Forest.loadData(sData, descriptor);
-//        Instance oneSample = data.get(0);
-//        Forest ff = new Forest();
-//        try {
-//            double label = ff.eva(sData);
-//            System.out.println(label);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        tr.setText(String.valueOf(label));
+        nr.setText(String.valueOf(label2));
+        fr.setText(String.valueOf(label3));
 
 
-        //j48 = (J48) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaTree");
-        double label = j48.classifyInstance(ins.instance(0));
-        double label2 = nn.classifyInstance(ins.instance(0));
-        System.out.println(label + " @@@ " + label2);
+        System.out.println(label + " @@@ " + label2 + " @@@ " + label3);
 
 
+
+    }
+
+    public void enter(ActionEvent actionEvent) {
+            BufferedImage scaledImg = getScaledImage(canvas);
+            imgView.setImage(SwingFXUtils.toFXImage(scaledImg, null));
+            try {
+                predictImage(scaledImg);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
 
     }
 
     public void initialize() throws Exception {
         nn = (MultilayerPerceptron) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaneural");
         j48 = (J48) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaTree");
+        forest = (RandomForest) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaForest");
     }
 
+    public void exit(ActionEvent actionEvent) {
+        Platform.exit();
+    }
+
+    public void help(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("User's Guide");
+        alert.setContentText("You can draw with the left button on the highlighted area. \n Clear board with right button. \n Evaluation with the Predict button.");
+        alert.initStyle(StageStyle.UNDECORATED);
+        alert.showAndWait();
+    }
 }

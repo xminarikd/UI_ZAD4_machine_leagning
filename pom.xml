@@ -22,14 +22,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.encog</groupId>
-            <artifactId>encog-core</artifactId>
-            <version>3.4</version>
+            <groupId>org.apache.mahout</groupId>
+            <artifactId>mahout-core</artifactId>
+            <version>0.8</version>
         </dependency>
         <dependency>
             <groupId>org.apache.mahout</groupId>
-            <artifactId>mahout-core</artifactId>
-            <version>0.9</version>
+            <artifactId>mahout</artifactId>
+            <version>0.13.0</version>
         </dependency>
         <dependency>
             <groupId>org.uncommons.maths</groupId>
@@ -38,8 +38,8 @@
         </dependency>
         <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
-            <artifactId>weka-stable</artifactId>
-            <version>3.8.3</version>
+            <artifactId>weka-dev</artifactId>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>com.opencsv</groupId>

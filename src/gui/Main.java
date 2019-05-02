@@ -1,5 +1,6 @@
 package gui;
 
+import controller.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,15 +13,17 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        Controller controller;
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/windows.fxml"));
 
         Parent parent = (Parent) fxmlLoader.load();
+        controller = fxmlLoader.getController();
+        controller.init();
 
         Stage stage = new Stage();
-        //scene.getStylesheets().add("/styles/Styles.css");
-        stage.setTitle("title");
-       // stage.setOpacity(1.0);
-        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setTitle("Digit Recognition");
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(new Scene(parent));
         stage.show();
     }
