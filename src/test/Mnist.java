@@ -2,6 +2,7 @@ package test;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import weka.core.Attribute;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
@@ -72,17 +73,22 @@ public class Mnist {
         }
         return list.toArray(new String[list.size()]);
 
-
     }
 
     public static void createTreeDataSet(String file, String name) {
         CSVLoader loader = null;
         Instances instances = null;
+        List<String> lab = new ArrayList<>();
+        for(int i = 0; i < 10; i++){
+            lab.add(String.valueOf(i));
+        }
+        Attribute atr = new Attribute("Label",lab);
 
         try {
             loader = new CSVLoader();
             loader.setSource(new File(file));
             instances = loader.getDataSet();
+            instances.replaceAttributeAt(atr,0);
             instances.setClassIndex(0);
 
         ArffSaver saver = new ArffSaver();

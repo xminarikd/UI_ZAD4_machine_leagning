@@ -13,12 +13,12 @@ public class Luncher {
 //        Mnist.extendSet(Mnist.TEST_NAME,"ExTest.csv",10000);
 //        Mnist.extendSet(Mnist.TRAIN_NAME,"ExTrain.csv",60000);
 
-//        Mnist.createTreeDataSet("C:\\Users\\minar\\Documents\\UI04v0.2\\ExTest.csv", "ExTest.arff");
+//        Mnist.createTreeDataSet("C:\\Users\\minar\\Documents\\UI04v0.2\\ExTest.csv", "ExTestskuska.arff");
 //        Mnist.createTreeDataSet("C:\\Users\\minar\\Documents\\UI04v0.2\\ExTrain.csv", "ExTrain.arff");
 
 
-//        WekaNeural wnn = new WekaNeural();
-//        wnn.main();
+        WekaNeural wnn = new WekaNeural();
+        wnn.main();
 
 //        Forest forest = new Forest();
 //        try {
@@ -34,8 +34,8 @@ public class Luncher {
 //        forest.init();
 
 
-        Combi combi = new Combi();
-        combi.init();
+//        Combi combi = new Combi();
+//        combi.init();
 
 
     }

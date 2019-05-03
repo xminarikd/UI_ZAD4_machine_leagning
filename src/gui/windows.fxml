@@ -9,7 +9,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #dfdce3;" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
-      <Canvas fx:id="canvas" height="200.0" layoutX="58.0" layoutY="103.0" width="200.0" />
+      <Canvas fx:id="canvas" height="200.0" layoutX="58.0" layoutY="103.0" onMouseClicked="#click" onMouseDragged="#dragged" onMousePressed="#pressed" width="200.0" />
       <ImageView fx:id="imgView" fitHeight="150.0" fitWidth="200.0" layoutX="314.0" layoutY="153.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="flable" layoutX="563.0" layoutY="147.0" style="-fx-text-fill: #465c8b;" text="Forest" textFill="WHITE">
          <font>
