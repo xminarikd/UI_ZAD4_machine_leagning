@@ -1,7 +1,6 @@
 package test;
 
 import org.apache.mahout.classifier.ConfusionMatrix;
-import org.apache.mahout.classifier.df.data.Data;
 import org.apache.mahout.common.RandomUtils;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.trees.J48;
@@ -18,27 +17,24 @@ import java.util.Random;
 public class Combi {
 
     public void init() throws Exception {
-        Instances testSetW = new Instances(new BufferedReader(new FileReader(new File("C:\\Users\\minar\\Documents\\UI04v0.2\\test.arff"))));
+        System.out.println("Loading dataset...");
+        Instances testSetW = new Instances(new BufferedReader(new FileReader(new File(Luncher.DIR + "\\test.arff"))));
         testSetW.setClassIndex(0);
         Normalize normalizeFilter = new Normalize();
         normalizeFilter.setInputFormat(testSetW);
         testSetW = Normalize.useFilter(testSetW,normalizeFilter);
 
         String[] testSetF =  Mnist.createForestDataSet(Mnist.TEST_NAME);
-        String descriptor = Forest.buildDescriptor(784);
-        Data data = Forest.loadData(testSetF,descriptor);
         evaluate(testSetW);
     }
 
     public void evaluate(Instances testSetW) throws Exception {
 
         Random rng = RandomUtils.getRandom();
-        MultilayerPerceptron neuralNetwork = (MultilayerPerceptron) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaneural");
-        J48 j48 = (J48) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaTree");
-        RandomForest forest = (RandomForest) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaForest");
-//        Configuration config = new Configuration();
-//        Path path = new Path("C:\\Users\\minar\\Documents\\UI04v0.2\\saved-forest_10-trees.txt");
-//        DecisionForest forest = DecisionForest.load(config, path);
+        MultilayerPerceptron neuralNetwork = (MultilayerPerceptron) weka.core.SerializationHelper.read(Luncher.DIR + "\\wekaneural");
+        J48 j48 = (J48) weka.core.SerializationHelper.read(Luncher.DIR + "\\wekaTree");
+        RandomForest forest = (RandomForest) weka.core.SerializationHelper.read(Luncher.DIR + "\\wekaForest");
+
 
         try {
             int numberCorrect = 0;
@@ -52,12 +48,8 @@ public class Combi {
             int[] results = null;
 
             for (int i = 0; i < testSetW.size(); i++) {
-//                Instance oneSample = test.get(i);
-//                double actualIndex = oneSample.get(0);
-                //int actualLabel = test.getDataset().valueOf(0, String.valueOf((int) actualIndex));
                 int actualLabel = (int) testSetW.instance(i).toDoubleArray()[0];
                 results = new int[3];
-                //results[0] = (int) forest.classify(test.getDataset(), rng, oneSample);
                 results[0] = (int) forest.classifyInstance(testSetW.instance(i));
                 results[1] = (int) neuralNetwork.classifyInstance(testSetW.instance(i));
                 results[2] = (int) j48.classifyInstance(testSetW.instance(i));
@@ -83,7 +75,6 @@ public class Combi {
                 }
 
                 confusionMatrix.addInstance(String.valueOf(finalLabel),String.valueOf(actualLabel));
-                //System.out.println("label = " + label + " actual = " + actualLabel);
 
                 if (finalLabel == actualLabel) {
                     numberCorrect++;

@@ -12,22 +12,19 @@ import java.util.Arrays;
 public class DTree {
 
     public void main() throws Exception {
-    //    Instances trainSet = Mnist.createTreeDataSet(Mnist.TRAIN_NAME);
-    //    Instances testSet = Mnist.createTreeDataSet(Mnist.TEST_NAME);
-
         Instances trainSet;
         Instances testSet;
-
+        System.out.println("Loading dataset...");
         if(!Luncher.EXTEND) {
-            trainSet = new Instances(new BufferedReader(new FileReader(new File("C:\\Users\\minar\\Documents\\UI04v0.2\\train.arff"))));
+            trainSet = new Instances(new BufferedReader(new FileReader(new File(Luncher.DIR + "\\train.arff"))));
             trainSet.setClassIndex(0);
-            testSet = new Instances(new BufferedReader(new FileReader(new File("C:\\Users\\minar\\Documents\\UI04v0.2\\test.arff"))));
+            testSet = new Instances(new BufferedReader(new FileReader(new File(Luncher.DIR + "\\test.arff"))));
             testSet.setClassIndex(0);
         }
         else{
-            trainSet = new Instances(new BufferedReader(new FileReader(new File("C:\\Users\\minar\\Documents\\UI04v0.2\\ExTrain.arff"))));
+            trainSet = new Instances(new BufferedReader(new FileReader(new File(Luncher.DIR + "\\ExTrain.arff"))));
             trainSet.setClassIndex(0);
-            testSet = new Instances(new BufferedReader(new FileReader(new File("C:\\Users\\minar\\Documents\\UI04v0.2\\ExTest.arff"))));
+            testSet = new Instances(new BufferedReader(new FileReader(new File(Luncher.DIR + "\\ExTest.arff"))));
             testSet.setClassIndex(0);
         }
         Normalize normalizeFilter = new Normalize();
@@ -59,16 +56,23 @@ public class DTree {
             end = System.currentTimeMillis();
             System.out.println("\tTraining took: " + (end - start) / 1000.0);
         }else {
-            if(Luncher.EXTEND) j48 = (J48) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\ExwekaTree");
-            else j48 = (J48) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaTree");
+            if(Luncher.EXTEND) j48 = (J48) weka.core.SerializationHelper.read(Luncher.DIR + "\\ExwekaTree");
+            else j48 = (J48) weka.core.SerializationHelper.read(Luncher.DIR + "\\wekaTree");
         }
 
-        System.gc();
-
+        System.out.println("Evaluating...");
         Evaluation evaluation = new Evaluation(testSet);
         evaluation.evaluateModel(j48,testSet);
         System.out.println("Eroror rate: " + evaluation.errorRate() * 100 );
-        System.out.println("Confusion matrix: \n" + Arrays.deepToString(evaluation.confusionMatrix()).replaceAll("], ", "]" + System.lineSeparator()));
+        System.out.println(evaluation.toSummaryString());
+        int[][] CM = new int[10][10];
+        double[][] CMD = evaluation.confusionMatrix();
+        for(int i = 0; i < 10; i++)
+            for(int j = 0; j < 10; j++){
+                CM[i][j] = (int) CMD[i][j];
+            }
+        //System.out.println("Confusion matrix: \n" + Arrays.deepToString((evaluation.confusionMatrix())).replaceAll("], ", "]" + System.lineSeparator()));
+        System.out.println("Confusion matrix: \n" + Arrays.deepToString(CM).replaceAll("], ", "]" + System.lineSeparator()));
 
     }
 

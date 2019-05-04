@@ -27,11 +27,6 @@
             <version>0.8</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.mahout</groupId>
-            <artifactId>mahout</artifactId>
-            <version>0.13.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.uncommons.maths</groupId>
             <artifactId>uncommons-maths</artifactId>
             <version>1.2.2</version>

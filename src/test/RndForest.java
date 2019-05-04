@@ -16,6 +16,7 @@ public class RndForest {
         Instances trainSet;
         Instances testSet;
 
+        System.out.println("Loading dataset...");
         if(!Luncher.EXTEND) {
             trainSet = new Instances(new BufferedReader(new FileReader(new File("C:\\Users\\minar\\Documents\\UI04v0.2\\train.arff"))));
             trainSet.setClassIndex(0);
@@ -61,11 +62,19 @@ public class RndForest {
 
         System.gc();
 
+        System.out.println("Evaluating...");
         Evaluation evaluation = new Evaluation(testSet);
         evaluation.evaluateModel(wekaRF,testSet);
         System.out.println("Eroror rate: " + evaluation.errorRate() * 100 );
         System.out.println("Results:" + evaluation.toSummaryString());
-        System.out.println("Confusion matrix: \n" + Arrays.deepToString(evaluation.confusionMatrix()).replaceAll("], ", "]" + System.lineSeparator()));
+        int[][] CM = new int[10][10];
+        double[][] CMD = evaluation.confusionMatrix();
+        for(int i = 0; i < 10; i++)
+            for(int j = 0; j < 10; j++){
+                CM[i][j] = (int) CMD[i][j];
+            }
+        //System.out.println("Confusion matrix: \n" + Arrays.deepToString((evaluation.confusionMatrix())).replaceAll("], ", "]" + System.lineSeparator()));
+        System.out.println("Confusion matrix: \n" + Arrays.deepToString(CM).replaceAll("], ", "]" + System.lineSeparator()));
 
     }
 

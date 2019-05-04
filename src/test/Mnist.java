@@ -2,6 +2,9 @@ package test;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import weka.attributeSelection.AttributeSelection;
+import weka.attributeSelection.InfoGainAttributeEval;
+import weka.attributeSelection.Ranker;
 import weka.core.Attribute;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
@@ -14,44 +17,32 @@ import java.util.List;
 
 public class Mnist {
 
-    public static final String TRAIN_NAME = "C:\\Users\\minar\\Documents\\UI04\\src\\main\\resources\\mnist_train.csv";
-    public static final String TEST_NAME = "C:\\Users\\minar\\Documents\\UI04\\src\\main\\resources\\mnist_test.csv";
+    public static final String TRAIN_NAME = Luncher.DIR + "\\mnist_train.csv";
+    public static final String TEST_NAME = Luncher.DIR + "\\mnist_test.csv";
 
 
-//    public static MLDataSet createDS(String fileName, int size){
-//        MLDataSet dsr = null;
-//        int itter = 0;
-//
-//        File file = new File(fileName);
-//        final String DELIMITER = ",";
-//        BufferedReader bufferedR = null;
-//        double[][] input = new double[size][784];
-//        double[][] output = new double[size][10];
-//
-//        try {
-//            String line = "";
-//            bufferedR = new BufferedReader(new FileReader(file));
-//
-//            //skip first line
-//            bufferedR.readLine();
-//            while((line = bufferedR.readLine()) != null){
-//                String[] tokens = line.split(DELIMITER);
-//                output[itter][Integer.parseInt(tokens[0])] = 1d;
-//                for(int i = 1; i < 785; i++){
-//                    if(Integer.parseInt(tokens[i]) > 127) {
-//                        input[itter][i - 1] = 1d;
-//                    }
-//                }
-//                itter++;
-//            }
-//            dsr = new BasicMLDataSet(input,output);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return dsr;
-//    }
+
+    public static String rank() throws Exception {
+        Instances set;
+
+        if (!Luncher.EXTEND) {
+            set = new Instances(new BufferedReader(new FileReader(new File(Luncher.DIR + "\\train.arff"))));
+            set.setClassIndex(0);
+        } else {
+            set = new Instances(new BufferedReader(new FileReader(new File(Luncher.DIR + "\\ExTrain.arff"))));
+            set.setClassIndex(0);
+        }
+        Ranker ranker = new Ranker();
+        AttributeSelection selector = new AttributeSelection();
+        InfoGainAttributeEval eva = new InfoGainAttributeEval();
+        ranker.setNumToSelect(set.numAttributes() - 1);
+        selector.setEvaluator(eva);
+        selector.setSearch(ranker);
+        selector.SelectAttributes(set);
+        selector.rankedAttributes();
+        return (selector.toResultsString());
+    }
+
 
     public static String[] createForestDataSet(String file){
         List<String> list = new ArrayList<String>();
@@ -75,7 +66,7 @@ public class Mnist {
 
     }
 
-    public static void createTreeDataSet(String file, String name) {
+    public static void createDataSet(String file, String name) {
         CSVLoader loader = null;
         Instances instances = null;
         List<String> lab = new ArrayList<>();
@@ -88,7 +79,7 @@ public class Mnist {
             loader = new CSVLoader();
             loader.setSource(new File(file));
             instances = loader.getDataSet();
-            instances.replaceAttributeAt(atr,0);
+            //instances.replaceAttributeAt(atr,0);
             instances.setClassIndex(0);
 
         ArffSaver saver = new ArffSaver();
@@ -117,8 +108,8 @@ public class Mnist {
             line.add("ex1");
             line.add("ex2");
             line.add("ex3");
-            //line.add("ex4");
-            //line.add("ex5");
+            line.add("ex4");
+            line.add("ex5");
             writer.writeNext(Arrays.stream(line.toArray()).toArray(String[]::new));
             for(int j = 0; j < size; j++) {
                 nextLine = reader.readNext();
@@ -158,9 +149,9 @@ public class Mnist {
                 }
 
 
-                //line.add(String.valueOf(poc));
+                line.add(String.valueOf(poc));
                 line.add(String.valueOf(center));
-                //line.add(String.valueOf(max));
+                line.add(String.valueOf(max));
                 line.add(String.valueOf((int) ((cx/m) * 100)));
                 line.add(String.valueOf((int) ((cy/m) * 100)));
 

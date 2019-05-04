@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.StageStyle;
 import org.datavec.image.loader.NativeImageLoader;
+import test.Luncher;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
@@ -44,6 +45,7 @@ public class Controller {
     private MultilayerPerceptron nn = null;
     private RandomForest forest = null;
     private J48 j48 = null;
+    private String DIR;
 
     public void init() {
 
@@ -144,9 +146,10 @@ public class Controller {
     }
 
     public void initialize() throws Exception {
-        nn = (MultilayerPerceptron) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaneural");
-        j48 = (J48) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaTree");
-        forest = (RandomForest) weka.core.SerializationHelper.read("C:\\Users\\minar\\Documents\\UI04v0.2\\wekaForest");
+        DIR = System.getProperty("user.dir");
+        nn = (MultilayerPerceptron) weka.core.SerializationHelper.read(DIR + "\\wekaneural");
+        j48 = (J48) weka.core.SerializationHelper.read(DIR + "\\wekaTree");
+        forest = (RandomForest) weka.core.SerializationHelper.read(DIR + "\\wekaForest");
     }
 
     public void exit(ActionEvent actionEvent) {
