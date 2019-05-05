@@ -1,6 +1,8 @@
 package test;
 
-
+/**
+ * Hlavna trieda pre trenovanie a testovanie jednotlivých modelov
+ */
 public class Luncher {
 
     public static final boolean TRAIN = false;
@@ -12,12 +14,21 @@ public class Luncher {
 
         DIR = (System.getProperty("user.dir"));
 
+        /**
+         * Vytvorenie extend mnist suborov
+         */
 //        Mnist.extendSet(Mnist.TEST_NAME,"ExTest.csv",10000);
 //        Mnist.extendSet(Mnist.TRAIN_NAME,"ExTrain.csv",60000);
 
+        /**
+         * vytvorenie arff suborov
+         */
 //        Mnist.createDataSet("C:\\Users\\minar\\Documents\\UI04v0.2\\ExTest.csv", "ExTest.arff");
 //        Mnist.createDataSet("C:\\Users\\minar\\Documents\\UI04v0.2\\ExTrain.csv", "ExTrain.arff");
 
+        /**
+         * vypis hodnotenia atributov
+         */
 //        System.out.println(Mnist.rank());
 
         if(MODEL == 1) {
